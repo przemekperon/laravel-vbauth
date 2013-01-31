@@ -1,6 +1,4 @@
-Allows you to use [Twig](http://twig.sensiolabs.org/) seamlessly in [Laravel 4](http://laravel.com/).
-
-[![Build Status](https://travis-ci.org/rcrowe/TwigBridge.png?branch=master)](https://travis-ci.org/rcrowe/TwigBridge)
+Authorization for [VBulletin](http://www.vbulletin.com) users in [Laravel 4](http://laravel.com/). Tested with VBulletin 4.x
 
 Installation
 ============
