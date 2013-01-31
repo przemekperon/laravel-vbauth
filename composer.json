@@ -1,0 +1,24 @@
+{
+    "name": "pperon/vbauth",
+    "description": "Vbulletin auth for Laravel 4 (Illuminate)",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Przemyslaw Peron",
+            "email": "huan@huan.pl"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "laravel/framework": ">=4.0"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations"
+        ],
+        "psr-0": {
+            "Pperon\\Vbauth": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
