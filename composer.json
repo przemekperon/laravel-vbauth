@@ -1,7 +1,9 @@
 {
     "name": "pperon/vbauth",
-    "description": "Vbulletin auth for Laravel 4 (Illuminate)",
+    "description": "Vbulletin auth library for Laravel 4 (Illuminate)",
     "license": "MIT",
+    "keywords": ["vbulletin","laravel","vb","illuminate"],
+    "homepage": "https://github.com/przemyslawperon/laravel-vbauth",
     "authors": [
         {
             "name": "Przemyslaw Peron",
