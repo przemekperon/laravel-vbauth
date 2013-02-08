@@ -6,7 +6,7 @@
     "homepage": "https://github.com/przemyslawperon/laravel-vbauth",
     "authors": [
         {
-            "name": "Przemyslaw Peron",
+            "name": "Przemysław Peron",
             "email": "huan@huan.pl"
         }
     ],
@@ -20,6 +20,11 @@
         ],
         "psr-0": {
             "Pperon\\Vbauth": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
         }
     },
     "minimum-stability": "dev"
