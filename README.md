@@ -2,7 +2,7 @@ Authorization for [VBulletin](http://www.vbulletin.com) users in [Laravel 4](htt
 
 Installation
 ============
-
+ 
 Add `pperon/vbauth` as a requirement to composer.json:
 
 ```javascript
