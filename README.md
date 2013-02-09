@@ -18,7 +18,7 @@ Update your packages with `composer update` or install with `composer install`.
 Once Composer has installed or updated your packages you need to register Vbauth with Laravel itself. Open app/config/app.php and find the providers key towards the bottom and add:
 
 ```php
-'Pperon\VbauthServiceProvider'
+'Pperon\Vbauth\VbauthServiceProvider'
 ```
 
 Configuration
