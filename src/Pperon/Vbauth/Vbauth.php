@@ -52,9 +52,10 @@ class Vbauth {
     protected $info;
 
         /**
-         *	vBulletin License Key
+         *	vBulletin Cookie Salt
+         *   
          */
-    protected $license;
+    protected $cookie_salt;
 
         /**
          *	Forum Base URL
@@ -92,7 +93,7 @@ class Vbauth {
             */
 
             $this->dbprefix       = Config::get('vbauth::dbprefix');
-            $this->license        = Config::get('vbauth::vblicense');
+            $this->cookie_salt        = Config::get('vbauth::cookiesalt');
             $this->cookie_prefix  = Config::get('vbauth::cookieprefix');  // TODO: get this from vB db
             $this->cookie_timeout = Config::get('vbauth::cookietimeout'); // TODO: get this from vB db
             $this->select_columns = Config::get('vbauth::selectcolumns');
@@ -191,7 +192,7 @@ class Vbauth {
 			$user = DB::table($this->dbprefix.'user')
 			->select('username')
 			->where('userid', $userid)
-			->where(DB::raw("md5(concat(password,'".$this->license."')) = '$password'"))
+			->where(DB::raw("md5(concat(password,'".$this->cookie_salt."')) = '$password'"))
 			->get()->toArray();
             if (empty($user)) {
                 return false;
@@ -229,7 +230,7 @@ class Vbauth {
         public function createCookieUser($userid, $password)
         {
 			Cookie::put($this->cookie_prefix.'userid', $userid, time() + 31536000);
-			Cookie::put($this->cookie_prefix.'password', md5($password . $this->license), time() + 31536000);
+			Cookie::put($this->cookie_prefix.'password', md5($password . $this->cookie_salt), time() + 31536000);
         }
 
         /**
