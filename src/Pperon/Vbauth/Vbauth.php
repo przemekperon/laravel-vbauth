@@ -393,7 +393,7 @@ class Vbauth {
          */
         public function logoutUrl()
         {
-            $securitytoken_raw = sha1($this->info['userid'] . sha1($this->info['salt']) . sha1($this->license));
+            $securitytoken_raw = sha1($this->info['userid'] . sha1($this->info['salt']) . sha1($this->cookie_salt));
             $securitytoken = time() . '-' . sha1(time() . $securitytoken_raw);
 
             $logoutUrl    = $this->forum_url.'login.php?do=logout&logouthash='.$securitytoken;
