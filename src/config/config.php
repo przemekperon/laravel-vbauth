@@ -1,23 +1,25 @@
 <?php
 
-/*
- * cookiesalt - you can get this from the Vbulletin installation:
- *              includes/functions.php (line 34.)
- *              Example:              
- *              define('COOKIE_SALT', 'ABCdefghjkklmno123456790');
- *              ABCdefghjkklmno123456790 is the cookiesalt
- *				IMPORTANT!!! without cookiesalt it's impossible to 
- *              decode vbulletin cookies
+/**
+ * cookie_salt - you can get this from the Vbulletin installation:
+ *               includes/functions.php (line 34.)
+ *               Example:              
+ *               define('COOKIE_SALT', 'ABCdefghjkklmno123456790');
+ *               ABCdefghjkklmno123456790 is the cookiesalt
+ *
+ *			 	 IMPORTANT!!! without cookie_salt it's impossible to 
+ *               decode vbulletin cookies
  */
 
 return array(
-	'dbprefix' => 'vb_',
-	'cookiesalt' => 'ABCdefghjkklmno123456790',
-	'cookieprefix' => 'bb_',
-	'cookietimeout' => 3600,
-	'cookiedomain' => 'domain.com',
+	'db_prefix' => 'vb_',
+	'cookie_salt' => 'ABCdefghjkklmno123456790',
+	'cookie_prefix' => 'bb_',
+	'cookie_timeout' => 3600,
+	'cookie_domain' => 'domain.com',
 	'forum_url' => 'http://www.domain.com/forum/',
-	'selectcolumns' => array(
+	
+	'select_columns' => array(
 		'userid', 
 		'username', 
 		'usergroupid', 
@@ -25,6 +27,7 @@ return array(
 		'email', 
 		'salt',
 	),
+
 	'groups' => array(
 		'admin'     	=> array(6),
 		'moderator' 	=> array(5, 7),
@@ -32,5 +35,4 @@ return array(
 		'banned'    	=> array(8),
 		'guest'     	=> array(3),
 	),
-
 );
