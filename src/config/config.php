@@ -1,11 +1,13 @@
 <?php
 
 /*
- * cookiesalt - you can get this in the Vbulletin installation:
+ * cookiesalt - you can get this from the Vbulletin installation:
  *              includes/functions.php (line 34.)
  *              Example:              
  *              define('COOKIE_SALT', 'ABCdefghjkklmno123456790');
  *              ABCdefghjkklmno123456790 is the cookiesalt
+ *				IMPORTANT!!! without cookiesalt it's impossible to 
+ *              decode vbulletin cookies
  */
 
 return array(
