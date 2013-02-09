@@ -18,13 +18,26 @@ Update your packages with `composer update` or install with `composer install`.
 Once Composer has installed or updated your packages you need to register Vbauth with Laravel itself. Open app/config/app.php and find the providers key towards the bottom and add:
 
 ```php
-'Pperon\Vbauth\VbauthServiceProvider'
+'providers' => array(
+		...
+		...
+		'Pperon\Vbauth\VbauthServiceProvider',
+),
+```
+
+In order to use shorter class alias add it to alias sections in app/config/app.php:
+
+```php
+'aliases' => array(
+		...
+		...
+		'Vbauth'		  => 'Pperon\Vbauth\Vbauth',
 ```
 
 Configuration
 =============
 
-Default configuration file is in vendor/pperon/vbauth/src/config/config.php but you can overwrite it by creating `app/config/packages/pperon/vbauth/config.php` file.
+Default configuration file is located in vendor/pperon/vbauth/src/config/config.php but you can overwrite it with `app/config/packages/pperon/vbauth/config.php` file.
 
 You can use Artisan to publish a configuration file by running the following command:
 
