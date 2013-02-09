@@ -22,20 +22,10 @@ use Illuminate\Support\Facades\Cookie;
 class Vbauth {
 	
     protected $container;
-    protected $dbprefix;
+    protected $db_prefix;
     protected $cookie_prefix;
     protected $cookie_timeout;
-
-    /**
-     * vBulletin user columns to fetch for $userinfo array
-     * @var		array
-     */
     protected $select_columns;
-
-    /**
-     * Default $userinfo data if no user record is found
-     * @var		array
-     */
     protected $default_user = array(
         'userid' => 0,
         'username' => 'unregistered',
@@ -44,61 +34,25 @@ class Vbauth {
         'sessionhash' => '',
         'salt' => ''
     );
-
-        /**
-         * Userinfo data to be used throughout application
-         * @var		array
-         */
     protected $info;
-
-        /**
-         *	vBulletin Cookie Salt
-         *   
-         */
     protected $cookie_salt;
-
-        /**
-         *	Forum Base URL
-         */
     protected $forum_url;
 
         /**
          *   Constructor;
-         *   loads all dependencies from CI
+         *   Loads configuration options and 
          *   then tries to authenticate current session against vB
          */
 
     public function __construct() {
 
-            /* ATTENTION:
-
-            1. you have to have a vbulletin database configured in your config/database.php
-            2. make sure you don't use persistent db connections
-
-            something like this:
-
-            $db['vbulletin']['hostname'] = "localhost";
-            $db['vbulletin']['username'] = "username";
-            $db['vbulletin']['password'] = "password";
-            $db['vbulletin']['database'] = "database";
-            $db['vbulletin']['dbdriver'] = "mysql";
-            $db['vbulletin']['dbprefix'] = "vb_";
-            $db['vbulletin']['pconnect'] = FALSE;           // don't use persistent db connections
-            $db['vbulletin']['db_debug'] = TRUE;
-            $db['vbulletin']['cache_on'] = FALSE;
-            $db['vbulletin']['cachedir'] = "";
-            $db['vbulletin']['char_set'] = "utf8";
-            $db['vbulletin']['dbcollat'] = "utf8_general_ci";
-
-            */
-
-            $this->dbprefix       = Config::get('vbauth::dbprefix');
-            $this->cookie_salt        = Config::get('vbauth::cookiesalt');
-            $this->cookie_prefix  = Config::get('vbauth::cookieprefix');  // TODO: get this from vB db
-            $this->cookie_timeout = Config::get('vbauth::cookietimeout'); // TODO: get this from vB db
-            $this->select_columns = Config::get('vbauth::selectcolumns');
-            $this->groups         = Config::get('vbauth::groups');
+            $this->db_prefix       = Config::get('vbauth::db_prefix');
+            $this->cookie_salt    = Config::get('vbauth::cookie_salt');
+            $this->cookie_prefix  = Config::get('vbauth::cookie_prefix');  // TODO: get this from vB db
+            $this->cookie_timeout = Config::get('vbauth::cookie_timeout'); // TODO: get this from vB db
+            $this->select_columns = Config::get('vbauth::select_columns');
             $this->forum_url      = Config::get('vbauth::forum_url');
+            $this->groups         = Config::get('vbauth::groups');
 
             $this->setUserInfo($this->default_user);
 
@@ -185,7 +139,9 @@ class Vbauth {
         /**
          * Checks to see if $userid and hashed $password are valid credentials.
          *
-         * @return	integer		0 = false; X > 1 = Userid
+         * @param   int     $userid
+         * @param   string  $password
+         * @return	integer	0 = false; X > 1 = Userid
          */
         public function isValidCookieUser($userid, $password)
         {
@@ -204,7 +160,9 @@ class Vbauth {
         /**
          * Checks to see if $username and $password are valid credentials.
          *
-         * @return	integer		0 = false; X > 1 = Userid
+         * @param   string     $username
+         * @param   string     $password
+         * @return	integer	   0 = false; X > 1 = Userid
          */
         public function isValidLogin($username, $password)
         {
@@ -225,6 +183,8 @@ class Vbauth {
          *	Sets the cookies for a cookie user.  Call on login process ('remember me' option)
          *	Sets cookie timeout to 1 year from now
          *
+         *  @param   int     $userid
+         *  @param   string  $password
          *	@return  null;
          */
         public function createCookieUser($userid, $password)
@@ -237,6 +197,7 @@ class Vbauth {
          * Creates a session for $userid (logs them into vBulletin) by creating
          * both a cookie and an entry in the session table.
          *
+         * @param   int     $userid         
          * @param	integer		Userid to log in
          */
         public function createSession($userid)
@@ -280,7 +241,7 @@ class Vbauth {
 
         /**
          * Sets the userinfo array to be used
-         * @param	array		User record data
+         * @param	array      $userinfo
          */
         public function setUserInfo($userinfo)
         {
