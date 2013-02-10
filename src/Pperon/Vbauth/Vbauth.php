@@ -45,13 +45,13 @@ class Vbauth {
 
     public function __construct() {
 
-            $this->db_prefix      = $_COOKIE['vbauth::db_prefix'];
-            $this->cookie_salt    = $_COOKIE['vbauth::cookie_salt'];
-            $this->cookie_prefix  = $_COOKIE['vbauth::cookie_prefix'];  // TODO: get this from vB db
-            $this->cookie_timeout = $_COOKIE['vbauth::cookie_timeout']; // TODO: get this from vB db
-            $this->select_columns = $_COOKIE['vbauth::select_columns'];
-            $this->forum_url      = $_COOKIE['vbauth::forum_url'];
-            $this->groups         = $_COOKIE['vbauth::groups'];
+            $this->db_prefix      = Config::get('vbauth::db_prefix');
+            $this->cookie_salt    = Config::get('vbauth::cookie_salt');
+            $this->cookie_prefix  = Config::get('vbauth::cookie_prefix');  // TODO: get this from vB db
+            $this->cookie_timeout = Config::get('vbauth::cookie_timeout'); // TODO: get this from vB db
+            $this->select_columns = Config::get('vbauth::select_columns');
+            $this->forum_url      = Config::get('vbauth::forum_url');
+            $this->groups         = Config::get('vbauth::groups');
 
             $this->setUserInfo($this->default_user);
 
