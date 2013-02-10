@@ -1,4 +1,4 @@
-Authorization for [VBulletin](http://www.vbulletin.com) users in [Laravel 4](http://laravel.com/). Tested with VBulletin 4.x
+Authentication for [VBulletin](http://www.vbulletin.com) users in [Laravel 4](http://laravel.com/). Tested with VBulletin 4.x.
 
 Installation
 ============
@@ -32,6 +32,7 @@ In order to use shorter class alias add it to alias sections in app/config/app.p
 		...
 		...
 		'Vbauth'		  => 'Pperon\Vbauth\Vbauth',
+),
 ```
 
 Configuration

@@ -46,7 +46,7 @@ class Vbauth {
 
     public function __construct() {
 
-            $this->db_prefix       = Config::get('vbauth::db_prefix');
+            $this->db_prefix      = Config::get('vbauth::db_prefix');
             $this->cookie_salt    = Config::get('vbauth::cookie_salt');
             $this->cookie_prefix  = Config::get('vbauth::cookie_prefix');  // TODO: get this from vB db
             $this->cookie_timeout = Config::get('vbauth::cookie_timeout'); // TODO: get this from vB db
@@ -258,7 +258,7 @@ class Vbauth {
         public function is($group)
         {
             if (empty($this->groups[$group])) {
-                die("$group is invalid");
+                return false;
             }
 
             static $my_groups;
@@ -345,7 +345,7 @@ class Vbauth {
 
         public function isAdmin()
         {
-            return (isset($this->info['userid'])  && !empty($this->info['userid']) && $this->info['usergroupid'] == 6);
+            return (isset($this->info['userid'])  && !empty($this->info['userid']) && $this->is('admin'));
         }
         /**
          * Compose a logout url for remote logout links
