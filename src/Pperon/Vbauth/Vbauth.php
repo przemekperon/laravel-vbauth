@@ -16,7 +16,6 @@ namespace Pperon\Vbauth;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Cookie;
 
 
 class Vbauth {
@@ -46,13 +45,13 @@ class Vbauth {
 
     public function __construct() {
 
-            $this->db_prefix      = Config::get('vbauth::db_prefix');
-            $this->cookie_salt    = Config::get('vbauth::cookie_salt');
-            $this->cookie_prefix  = Config::get('vbauth::cookie_prefix');  // TODO: get this from vB db
-            $this->cookie_timeout = Config::get('vbauth::cookie_timeout'); // TODO: get this from vB db
-            $this->select_columns = Config::get('vbauth::select_columns');
-            $this->forum_url      = Config::get('vbauth::forum_url');
-            $this->groups         = Config::get('vbauth::groups');
+            $this->db_prefix      = $_COOKIE['vbauth::db_prefix'];
+            $this->cookie_salt    = $_COOKIE['vbauth::cookie_salt'];
+            $this->cookie_prefix  = $_COOKIE['vbauth::cookie_prefix'];  // TODO: get this from vB db
+            $this->cookie_timeout = $_COOKIE['vbauth::cookie_timeout']; // TODO: get this from vB db
+            $this->select_columns = $_COOKIE['vbauth::select_columns'];
+            $this->forum_url      = $_COOKIE['vbauth::forum_url'];
+            $this->groups         = $_COOKIE['vbauth::groups'];
 
             $this->setUserInfo($this->default_user);
 
@@ -68,11 +67,11 @@ class Vbauth {
         public function authenticateSession()
         {
             // check bbuser cookies (stored when 'remember me' checked)
-            $userid = Cookie::get($this->cookie_prefix .'userid');
-            $password = Cookie::get($this->cookie_prefix .'password');
+            $userid = $_COOKIE[$this->cookie_prefix .'userid'];
+            $password = $_COOKIE[$this->cookie_prefix .'password'];
 
             //check sessionhash
-            $vb_sessionhash =  Cookie::get($this->cookie_prefix.'sessionhash');
+            $vb_sessionhash =  $_COOKIE[$this->cookie_prefix.'sessionhash'];
 
             if ((!empty($userid) && !empty($password))) {
 
@@ -189,8 +188,8 @@ class Vbauth {
          */
         public function createCookieUser($userid, $password)
         {
-			Cookie::put($this->cookie_prefix.'userid', $userid, time() + 31536000);
-			Cookie::put($this->cookie_prefix.'password', md5($password . $this->cookie_salt), time() + 31536000);
+			setcookie($this->cookie_prefix.'userid', $userid, time() + 31536000, '/');
+			setcookie($this->cookie_prefix.'password', md5($password . $this->cookie_salt), time() + 31536000, '/');
         }
 
         /**
@@ -206,7 +205,9 @@ class Vbauth {
 
             $timeout = time() + $this->cookie_timeout;
 
-            Cookie::put($this->cookie_prefix . 'sessionhash', $hash, $timeout);
+            setcookie($this->cookie_prefix . 'sessionhash', $hash, $timeout, '/');
+            // below cookie is a workaround for vbulletin behind Varnish
+            setcookie($this->cookie_prefix . 'imloggedin', 'yes', $timeout, '/');
 
             $session = array(
             'userid'       => $userid,
@@ -230,9 +231,10 @@ class Vbauth {
          */
         public function deleteSession()
         {
-            Cookie::put($this->cookie_prefix.'sessionhash', '', time() - 3600);
-            Cookie::put($this->cookie_prefix.'userid', '', time() - 3600);
-            Cookie::put($this->cookie_prefix.'password', '', time() - 3600);
+            setcookie($this->cookie_prefix.'sessionhash', '', time() - 3600,'/');
+            setcookie($this->cookie_prefix.'userid', '', time() - 3600,'/');
+            setcookie($this->cookie_prefix.'password', '', time() - 3600,'/');
+            setcookie($this->cookie_prefix.'imloggedin', '', time() - 3600,'/');
             
             DB::table($this->dbprefix.'session')
             ->where('sessionhash', $this->info['sessionhash'])
