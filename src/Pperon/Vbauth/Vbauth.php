@@ -91,7 +91,7 @@ class Vbauth {
 
             // Logged in vB via session
             if (!empty($vb_sessionhash)) {
-				$session = DB::table($this->dbprefix.'session')
+				$session = DB::table($this->db_prefix.'session')
 				->where('sessionhash', $vb_sessionhash)
 				->where('idhash', $this->fetchIdHash())
 				->where('lastactivity', time() - $this->cookie_timeout)
@@ -102,7 +102,7 @@ class Vbauth {
                 }
 
                 if (is_array($session[0]) and $session[0]['host'] == substr(Request::server('REMOTE_ADDR'), 0, 15)) {
-                    $userinfo = DB::table($this->dbprefix.'user')
+                    $userinfo = DB::table($this->db_prefix.'user')
                     ->select(implode(', ', $this->select_columns))
                     ->where('userid', $session[0]['userid'])
                     ->get()->toArray();
@@ -124,7 +124,7 @@ class Vbauth {
                     'location'     => Request::server('REQUEST_URI'),
                     );
 
-					DB::table($this->dbprefix.'session')
+					DB::table($this->db_prefix.'session')
 					->where('sessionhash', $session[0]['sessionhash'])
 					->update($update_session);
 
@@ -144,7 +144,7 @@ class Vbauth {
          */
         public function isValidCookieUser($userid, $password)
         {
-			$user = DB::table($this->dbprefix.'user')
+			$user = DB::table($this->db_prefix.'user')
 			->select('username')
 			->where('userid', $userid)
 			->where(DB::raw("md5(concat(password,'".$this->cookie_salt."')) = '$password'"))
@@ -165,7 +165,7 @@ class Vbauth {
          */
         public function isValidLogin($username, $password)
         {
-			$user = DB::table($this->dbprefix.'user')
+			$user = DB::table($this->db_prefix.'user')
 			->select('userid')
 			->where('username', $username)
 			->where(DB::raw("password = md5(concat(md5('".$password."'), salt))"))
@@ -219,7 +219,7 @@ class Vbauth {
             'useragent'    => Request::server('HTTP_USER_AGENT'),
             'loggedin'     => 1
             );
-			DB::table($this->dbprefix.'session')
+			DB::table($this->db_prefix.'session')
 			->insert($session);
 
             return $hash;
@@ -236,7 +236,7 @@ class Vbauth {
             setcookie($this->cookie_prefix.'password', '', time() - 3600,'/');
             setcookie($this->cookie_prefix.'imloggedin', '', time() - 3600,'/');
             
-            DB::table($this->dbprefix.'session')
+            DB::table($this->db_prefix.'session')
             ->where('sessionhash', $this->info['sessionhash'])
             ->delete();
         }
