@@ -16,6 +16,7 @@ namespace Pperon\Vbauth;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Request;
 
 
 class Vbauth {
@@ -150,11 +151,9 @@ class Vbauth {
 
     public function isValidCookieUser($userid, $password)
     {
-		$user = DB::table($this->db_prefix.'user')
-		->select('username')
-		->where('userid', $userid)
-		->where(DB::raw("md5(concat(password,'".$this->cookie_salt."')) = '$password'"))
-		->get();
+		$user = DB::select("SELECT username FROM ".$this->db_prefix
+            ."user WHERE userid=? AND md5(concat(password,?)) = ?",
+            array($userid, $this->cookie_salt, $password));
         if (empty($user)) {
             return false;
         }
