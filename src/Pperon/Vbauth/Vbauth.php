@@ -69,11 +69,11 @@ class Vbauth {
     public function authenticateSession()
     {
         // check bbuser cookies (stored when 'remember me' checked)
-        $userid = $_COOKIE[$this->cookie_prefix .'userid'];
-        $password = $_COOKIE[$this->cookie_prefix .'password'];
+        $userid = $_COOKIE[$this->cookie_prefix .'userid'] ?: null;
+        $password = $_COOKIE[$this->cookie_prefix .'password'] ?: null;
 
         //check sessionhash
-        $vb_sessionhash =  $_COOKIE[$this->cookie_prefix.'sessionhash'];
+        $vb_sessionhash =  $_COOKIE[$this->cookie_prefix.'sessionhash'] ?: null;
 
         if ((!empty($userid) && !empty($password))) {
 
