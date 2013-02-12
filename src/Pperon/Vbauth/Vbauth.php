@@ -342,7 +342,7 @@ class Vbauth {
     /**
      * Checks if the current user is logged in to vB
      *
-     * @return	bool    true if valid vb user, false if anonym visitor
+     * @return	bool    true if valid vb user, false if guest
      */
 
     public function isLoggedIn()
@@ -379,7 +379,7 @@ class Vbauth {
     }
 
     /**
-     * 	PHP 5 __GET()
+     * 	Get user information
      *
      */
 
