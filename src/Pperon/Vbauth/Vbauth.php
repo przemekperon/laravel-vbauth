@@ -123,7 +123,7 @@ class Vbauth {
 
                 // now let's inform vB what this user is just doing
 
-				DB::query('UPDATE '.$this->db_prefix.'session SET '
+				DB::update('UPDATE '.$this->db_prefix.'session SET '
                     .'lastactivity = ?, location = ? WHERE sessionhash = ?',
                     array($session[0]->sessionhash, time(), Request::server('REQUEST_URI')));
 
@@ -218,7 +218,7 @@ class Vbauth {
           Request::server('HTTP_USER_AGENT'),
           1
         );
-        DB::query('INSERT INTO '.$this->db_prefix.'session (userid,sessionhash,host,idhash,'
+        DB::insert('INSERT INTO '.$this->db_prefix.'session (userid,sessionhash,host,idhash,'
             .'lastactivity,location,useragent,loggedin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
             array($session));
 
@@ -236,7 +236,7 @@ class Vbauth {
         setcookie($this->cookie_prefix.'password', '', time() - 3600,'/');
         setcookie($this->cookie_prefix.'imloggedin', '', time() - 3600,'/');
         
-        DB::query('DELETE FROM '.$this->db_prefix.'session WHERE '
+        DB::delete('DELETE FROM '.$this->db_prefix.'session WHERE '
             .'sessionhash = ?', array($this->info['sessionhash']));
     }
 
