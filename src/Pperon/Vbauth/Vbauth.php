@@ -104,7 +104,7 @@ class Vbauth {
                 return false;
             }
 
-            if (is_array($session[0]) and $session[0]->host == substr(Request::server('REMOTE_ADDR'), 0, 15)) {
+            if (is_object($session[0]) and $session[0]->host == substr(Request::server('REMOTE_ADDR'), 0, 15)) {
                 // we have to add fake sessionhash field into the results
                 $userinfo = DB::select('SELECT '.implode(', ', $this->select_columns)
                     .', \'\' as sessionhash FROM '
