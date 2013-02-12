@@ -29,13 +29,9 @@ class VbauthServiceProvider extends ServiceProvider {
 	public function register() {
     $this->app['config']->package('pperon/vbauth', 'pperon/vbauth', 'pperon/vbauth');
 
-    $this->app['mailgun'] = $this->app->share(function($app)
+    $this->app['vbauth'] = $this->app->share(function($app)
     {
-      $vbauth = new VbAuth;
-
-      $vbauth->setContainer($app);
-
-      return $vbauth;
+        return new VbAuth;
     });
   }
 
@@ -46,7 +42,7 @@ class VbauthServiceProvider extends ServiceProvider {
 	 */
 	public function provides()
 	{
-		return array();
+		return array('vbauth');
 	}
 
 }

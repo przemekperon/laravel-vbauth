@@ -21,7 +21,6 @@ use Illuminate\Support\Facades\Request;
 
 class Vbauth {
 	
-    protected $container;
     protected $db_prefix;
     protected $cookie_prefix;
     protected $cookie_timeout;
@@ -97,21 +96,20 @@ class Vbauth {
 
         // Logged in vB via session
         if (!empty($vb_sessionhash)) {
-			$session = DB::table($this->db_prefix.'session')
-			->where('sessionhash', $vb_sessionhash)
-			->where('idhash', $this->fetchIdHash())
-			->where('lastactivity', time() - $this->cookie_timeout)
-			->get();
+            $session = DB::select('SELECT * FROM '.$this->db_prefix.'session WHERE '
+                .'sessionhash = ? AND idhash = ? AND lastactivity = ?',
+                array($vb_sessionhash, $this->fetchIdHash(), time() - $this->cookie_timeout));
 
             if (empty($session)) {
                 return false;
             }
 
             if (is_array($session[0]) and $session[0]->host == substr(Request::server('REMOTE_ADDR'), 0, 15)) {
-                $userinfo = DB::table($this->db_prefix.'user')
-                ->select(implode(', ', $this->select_columns))
-                ->where('userid', $session[0]->userid)
-                ->get();
+                // we have to add fake sessionhash field into the results
+                $userinfo = DB::select('SELECT '.implode(', ', $this->select_columns)
+                    .', \'\' as sessionhash FROM '
+                    .$this->db_prefix.'user WHERE userid = ?', array($session[0]->userid));
+
 
                 if (empty($userinfo)) {
                     return false;
@@ -125,14 +123,9 @@ class Vbauth {
 
                 // now let's inform vB what this user is just doing
 
-                $update_session = array(
-                    'lastactivity' => time(),
-                    'location'     => Request::server('REQUEST_URI'),
-                );
-
-				DB::table($this->db_prefix.'session')
-				->where('sessionhash', $session[0]['sessionhash'])
-				->update($update_session);
+				DB::query('UPDATE '.$this->db_prefix.'session SET '
+                    .'lastactivity = ?, location = ? WHERE sessionhash = ?',
+                    array($session[0]->sessionhash, time(), Request::server('REQUEST_URI')));
 
                 return true;
             }
@@ -171,11 +164,9 @@ class Vbauth {
 
     public function isValidLogin($username, $password)
     {
-		$user = DB::table($this->db_prefix.'user')
-		->select('userid')
-		->where('username', $username)
-		->where(DB::raw("password = md5(concat(md5('".$password."'), salt))"))
-		->get();
+        $user = DB::select('SELECT userid FROM '.$this->db_prefix.'user WHERE '
+            .'username = ? AND password = md5(concat(md5(?), salt))',
+            array($username, $password));
 
         if (empty($user)) {
             return false;
@@ -218,17 +209,18 @@ class Vbauth {
         setcookie($this->cookie_prefix . 'imloggedin', 'yes', $timeout, '/');
 
         $session = array(
-        'userid'       => $userid,
-        'sessionhash'  => $hash,
-        'host'         => Request::server('REMOTE_ADDR'),
-        'idhash'       => $this->fetchIdHash(),
-        'lastactivity' => time(),
-        'location'     => Request::server('REQUEST_URI'),
-        'useragent'    => Request::server('HTTP_USER_AGENT'),
-        'loggedin'     => 1
+          $userid,
+          $hash,
+          Request::server('REMOTE_ADDR'),
+          $this->fetchIdHash(),
+          time(),
+          Request::server('REQUEST_URI'),
+          Request::server('HTTP_USER_AGENT'),
+          1
         );
-		DB::table($this->db_prefix.'session')
-		->insert($session);
+        DB::query('INSERT INTO '.$this->db_prefix.'session (userid,sessionhash,host,idhash,'
+            .'lastactivity,location,useragent,loggedin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            array($session));
 
         return $hash;
     }
@@ -244,9 +236,8 @@ class Vbauth {
         setcookie($this->cookie_prefix.'password', '', time() - 3600,'/');
         setcookie($this->cookie_prefix.'imloggedin', '', time() - 3600,'/');
         
-        DB::table($this->db_prefix.'session')
-        ->where('sessionhash', $this->info['sessionhash'])
-        ->delete();
+        DB::query('DELETE FROM '.$this->db_prefix.'session WHERE '
+            .'sessionhash = ?', array($this->info['sessionhash']));
     }
 
     /**
@@ -399,8 +390,4 @@ class Vbauth {
          return $this->info["$var"];
      }
 
-     public function setContainer(Container $container)
-     {
-         $this->container = $container;
-     }
 }

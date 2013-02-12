@@ -31,7 +31,7 @@ In order to use shorter class alias add it to alias sections in app/config/app.p
 'aliases' => array(
 		...
 		...
-		'Vbauth'		  => 'Pperon\Vbauth\Vbauth',
+		'Vbauth'		  => 'Pperon\Vbauth\Facades\Vbauth',
 ),
 ```
 
