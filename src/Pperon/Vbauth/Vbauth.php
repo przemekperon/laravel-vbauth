@@ -97,7 +97,7 @@ class Vbauth {
         // Logged in vB via session
         if (!empty($vb_sessionhash)) {
             $session = DB::select('SELECT * FROM '.$this->db_prefix.'session WHERE '
-                .'sessionhash = ? AND idhash = ? AND lastactivity = ?',
+                .'sessionhash = ? AND idhash = ? AND lastactivity > ?',
                 array($vb_sessionhash, $this->fetchIdHash(), time() - $this->cookie_timeout));
 
             if (empty($session)) {
@@ -115,7 +115,7 @@ class Vbauth {
                     return false;
                 }
 
-                // $userinfo[0]->sessionhash = $session[0]->sessionhash;
+                $userinfo[0]->sessionhash = $session[0]->sessionhash;
 
                 // cool, session is authenticated
 
