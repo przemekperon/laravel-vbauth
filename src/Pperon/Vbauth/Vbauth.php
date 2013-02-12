@@ -219,9 +219,7 @@ class Vbauth {
           1
         );
         DB::insert('INSERT INTO '.$this->db_prefix.'session (userid,sessionhash,host,idhash,'
-            .'lastactivity,location,useragent,loggedin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-            array($session));
-
+            .'lastactivity,location,useragent,loggedin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', $session);
         return $hash;
     }
 
