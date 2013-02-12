@@ -31,7 +31,7 @@ class VbauthServiceProvider extends ServiceProvider {
 
     $this->app['vbauth'] = $this->app->share(function($app)
     {
-        return new VbAuth;
+        return new Vbauth;
     });
   }
 
