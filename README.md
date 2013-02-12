@@ -47,11 +47,10 @@ Usage
 Example usage in a controller:
 
 ```php
-$vbauth = new Vbauth();
-if($vbauth->isAdmin()){
+if(Vbauth::isAdmin()){
 	// Show administrator page
 	View::make('admin.index');
-} elseif ($vbauth->isLoggedin()) {
+} elseif (Vbauth::isLoggedin()) {
 	// Show user page
 	View::make('user.index');	
 } else {
@@ -62,15 +61,14 @@ if($vbauth->isAdmin()){
 
 ###Vbulletin User Variables
 
-You may access user information directly by calling $vbauth->fieldname. Fields are defined in config.php (select_columns).
+You may access user information directly by calling Vbauth::get('fieldname'). Fields are defined in config.php (select_columns).
 
 Example:
 ```php
-$vbauth = new Vbauth();
-if($vbauth->isLoggedin()) {
-    $user_id = $vbauth->userid;
-    $username = $vbauth->username;
-    $email = $vbauth->email;
+if(Vbauth::isLoggedin()) {
+    $user_id  = Vbauth::get('userid');
+    $username = Vbauth::get('username');
+    $email    = Vbauth::get('email');
 }
 
 ```
@@ -98,8 +96,7 @@ TRUE - user belongs to specific group
 
 Example:
 ```php
-$vbauth = new Vbauth();
-if($vbauth->is('moderator')) {
+if(Vbauth::is('moderator')) {
     View::make('moderator.panel');
 }
 ```
@@ -110,6 +107,5 @@ Returns URL to logout script in Vbulletin installation.
 
 Example:
 ```php
-$vbauth = new Vbauth();
-Redirect::to($vbauth->logoutURL());
+Redirect::to(Vbauth::logoutURL());
 ```

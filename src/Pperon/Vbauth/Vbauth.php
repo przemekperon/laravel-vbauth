@@ -383,7 +383,7 @@ class Vbauth {
      *
      */
 
-     public function __get($var)
+     public function get($var)
      {
          return $this->info["$var"];
      }
