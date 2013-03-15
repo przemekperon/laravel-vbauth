@@ -397,12 +397,12 @@ class Vbauth {
      {
         $userinfo = DB::table($this->db_prefix.'user')
             ->where('userid','=',$user_id)
-            ->select(implode(', ', $this->select_columns))
+            ->select($this->select_columns)
             ->take(1)
             ->get();
         if(count($userinfo) == 1) {
             foreach($this->select_columns as $column) {
-                $user_data[$column] = $userinfo->{$column};
+                $user_data[$column] = $userinfo[0]->{$column};
             }
             return $user_data;
         }
