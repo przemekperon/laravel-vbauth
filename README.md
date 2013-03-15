@@ -109,3 +109,30 @@ Example:
 ```php
 Redirect::to(Vbauth::logoutURL());
 ```
+
+###getUserInfo()
+
+Returns user data for any choosen forum user
+
+Example:
+```php
+$user_id = 8;
+$user = Vbauth::getUserInfo($user_id);
+echo $user['email']; // displays email for user with user_id = 8
+echo $user['username']; // show username
+```
+
+
+Change Log
+==========
+
+###v1.0.7
+
+Added `getUserInfo()` method which returns user information for any forum user
+
+Example:
+```php
+$user_id = 8;
+$user = Vbauth::getUserInfo($user_id);
+echo $user['email']; // displays email for user with user_id = 8
+```

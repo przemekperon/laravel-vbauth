@@ -248,7 +248,7 @@ class Vbauth {
         if(is_array($userinfo)){
             // we've got array
             $this->info = $userinfo;
-        } else {
+        } else if(is_object($userinfo)) {
             // we've got object
             foreach($this->select_columns as $column) {
                 if(isset($userinfo->{$column})) {
@@ -379,7 +379,7 @@ class Vbauth {
     }
 
     /**
-     * 	Get user information
+     * 	Get current user information
      *
      */
 
@@ -388,4 +388,23 @@ class Vbauth {
          return $this->info["$var"];
      }
 
+    /**
+     *  Get user information for user = $user_id
+     *
+     */
+
+     public function getUserInfo($user_id)
+     {
+        $userinfo = DB::table($this->db_prefix.'user')
+            ->where('userid','=',$user_id)
+            ->select(implode(', ', $this->select_columns))
+            ->take(1)
+            ->get();
+        if(count($userinfo) == 1) {
+            foreach($this->select_columns as $column) {
+                $user_data[$column] = $userinfo->{$column};
+            }
+            return $user_data;
+        }
+     }
 }
