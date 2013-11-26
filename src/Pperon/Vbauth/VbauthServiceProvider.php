@@ -2,7 +2,7 @@
 
 use Illuminate\Support\ServiceProvider;
 
-class Vbauth2ServiceProvider extends ServiceProvider
+class VbauthServiceProvider extends ServiceProvider
 {
     /**
      * Indicates if loading of the provider is deferred.
