@@ -12,27 +12,27 @@
  */
 
 return array(
-	'db_prefix' => 'vb_',
-	'cookie_salt' => 'ABCdefghjkklmno123456790',
-	'cookie_prefix' => 'bb_',
-	'cookie_timeout' => 3600,
-	'cookie_domain' => 'domain.com',
-	'forum_url' => 'http://www.domain.com/forum/',
-	
-	'select_columns' => array(
-		'userid', 
-		'username', 
-		'usergroupid', 
-		'membergroupids', 
-		'email', 
-		'salt',
-	),
+    'db_prefix' => 'vb_',
+    'cookie_salt' => 'ABCdefghjkklmno123456790',
+    'cookie_prefix' => 'bb_',
+    'cookie_timeout' => 3600,
+    'cookie_domain' => 'domain.com',
+    'forum_url' => 'http://www.domain.com/forum/',
+    
+    'select_columns' => array(
+        'userid', 
+        'username', 
+        'usergroupid', 
+        'membergroupids', 
+        'email', 
+        'salt',
+    ),
 
-	'groups' => array(
-		'admin'     	=> array(6),
-		'moderator' 	=> array(5, 7),
-		'user'      	=> array(2),
-		'banned'    	=> array(8),
-		'guest'     	=> array(3),
-	),
+    'groups' => array(
+        'admin'     	=> array(6),
+        'moderator' 	=> array(5, 7),
+        'user'      	=> array(2),
+        'banned'    	=> array(8),
+        'guest'     	=> array(3),
+    ),
 );

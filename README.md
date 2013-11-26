@@ -126,6 +126,17 @@ echo $user['username']; // show username
 Change Log
 ==========
 
+###v1.1.2
+
+Added support for separate database connection (when vbulletin forum database is
+located in different database than laravel):
+
+Set the connection in app/config/database.php and add the connection name to 
+config/packages/pperon/vbauth/config.php:
+```php
+  'db_connection' => 'vbconn', // vbconn is the connection name in database.php
+```
+
 ###v1.0.7
 
 Added `getUserInfo()` method which returns user information for any forum user

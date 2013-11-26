@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Request;
 class Vbauth
 {
     protected $db_prefix;
+    protected $db_connection;
     protected $cookie_prefix;
     protected $cookie_timeout;
     protected $select_columns;
@@ -44,7 +45,7 @@ class Vbauth
 
     public function __construct()
     {
-
+        $this->db_connection  = Config::get('vbauth::db_connection', 'mysql');
         $this->db_prefix      = Config::get('vbauth::db_prefix');
         $this->cookie_salt    = Config::get('vbauth::cookie_salt');
         $this->cookie_prefix  = Config::get('vbauth::cookie_prefix');  // TODO: get this from vB db
@@ -95,7 +96,7 @@ class Vbauth
 
         // Logged in vB via session
         if (!empty($vb_sessionhash)) {
-            $session = DB::select(
+            $session = DB::connection($this->db_connection)->select(
                 'SELECT * FROM '.$this->db_prefix.'session WHERE '.
                 'sessionhash = ? AND idhash = ? AND lastactivity > ?',
                 array($vb_sessionhash, $this->fetchIdHash(), time() - $this->cookie_timeout)
@@ -107,10 +108,10 @@ class Vbauth
 
             if (is_object($session[0]) and $session[0]->host == substr(Request::server('REMOTE_ADDR'), 0, 15)) {
                 // we have to add fake sessionhash field into the results
-                $userinfo = DB::select(
+                $userinfo = DB::connection($this->db_connection)->select(
                     'SELECT '.implode(', ', $this->select_columns).
                     ', \'\' as sessionhash FROM '.
-                    $this->db_prefix.   
+                    $this->db_prefix.
                     'user WHERE userid = ?',
                     array($session[0]->userid)
                 );
@@ -128,7 +129,7 @@ class Vbauth
 
                 // now let's inform vB what this user is just doing
 
-                DB::update(
+                DB::connection($this->db_connection)->update(
                     'UPDATE '.$this->db_prefix.
                     'session SET '.
                     'lastactivity = ?, location = ? WHERE sessionhash = ?',
@@ -150,9 +151,9 @@ class Vbauth
      * @return	integer	0 = false; X > 1 = Userid
      */
 
-    public function isValidCookieUser($userid, $password) 
+    public function isValidCookieUser($userid, $password)
     {
-        $user = DB::select(
+        $user = DB::connection($this->db_connection)->select(
             "SELECT username FROM ".$this->db_prefix.
             "user WHERE userid=? AND md5(concat(password,?)) = ?",
             array($userid, $this->cookie_salt, $password)
@@ -174,7 +175,7 @@ class Vbauth
 
     public function isValidLogin($username, $password)
     {
-        $user = DB::select(
+        $user = DB::connection($this->db_connection)->select(
             'SELECT userid FROM '.$this->db_prefix.'user WHERE '.
             'username = ? AND password = md5(concat(md5(?), salt))',
             array($username, $password)
@@ -230,7 +231,7 @@ class Vbauth
           Request::server('HTTP_USER_AGENT'),
           1
         );
-        DB::insert(
+        DB::connection($this->db_connection)->insert(
             'INSERT INTO '.$this->db_prefix.'session (userid, sessionhash, host, idhash, '.
             'lastactivity, location, useragent, loggedin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
             $session
@@ -249,7 +250,7 @@ class Vbauth
         setcookie($this->cookie_prefix.'password', '', time() - 3600, '/');
         setcookie($this->cookie_prefix.'imloggedin', '', time() - 3600, '/');
 
-        DB::delete(
+        DB::connection($this->db_connection)->delete(
             'DELETE FROM '.
             $this->db_prefix.
             'session WHERE '.
@@ -268,7 +269,7 @@ class Vbauth
         if (is_array($userinfo)) {
             // we've got array
             $this->info = $userinfo;
-        } else if (is_object($userinfo)) {
+        } elseif (is_object($userinfo)) {
             // we've got object
             foreach ($this->select_columns as $column) {
                 if (isset($userinfo->{$column})) {
@@ -416,7 +417,7 @@ class Vbauth
 
      public function getUserInfo($user_id)
      {
-        $userinfo = DB::table($this->db_prefix.'user')
+        $userinfo = DB::connection($this->db_connection)->table($this->db_prefix.'user')
             ->where('userid', '=', $user_id)
             ->select($this->select_columns)
             ->take(1)
