@@ -10,7 +10,29 @@
  *			 	 IMPORTANT!!! without cookie_salt it's impossible to 
  *               decode vbulletin cookies
  */
-
+/**
+ * db_connection - if the vbulletin database is in different database than
+ *                 your Laravel setup please change it to the proper connection
+ *                 name. Connection should be configured in app/config/database.php
+ *                 Example:
+ *                'connections' => array(
+ *                 ....
+ *                    'vbconn' => array(
+ *                      'driver'    => 'mysql',
+ *                      'host'      => 'localhost',
+ *                      'database'  => 'vb_forum',
+ *                      'username'  => 'vb_user',
+ *                      'password'  => 'pass123',
+ *                      'charset'   => 'utf8',
+ *                      'collation' => 'utf8_unicode_ci',
+ *                      'prefix'    => '',
+ *                    ),
+ *
+ *                in /config/packages/pperon/vbauth/config.php set:
+ *                ....
+ *                     'db_connection' => 'vbconn',
+ *                ....
+ */
 return array(
     'db_prefix' => 'vb_',
     'cookie_salt' => 'ABCdefghjkklmno123456790',
@@ -18,13 +40,13 @@ return array(
     'cookie_timeout' => 3600,
     'cookie_domain' => 'domain.com',
     'forum_url' => 'http://www.domain.com/forum/',
-    
+    'db_connection' => 'mysql',
     'select_columns' => array(
-        'userid', 
-        'username', 
-        'usergroupid', 
-        'membergroupids', 
-        'email', 
+        'userid',
+        'username',
+        'usergroupid',
+        'membergroupids',
+        'email',
         'salt',
     ),
 

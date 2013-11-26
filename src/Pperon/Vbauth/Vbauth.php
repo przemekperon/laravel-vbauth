@@ -111,7 +111,7 @@ class Vbauth
                 $userinfo = DB::connection($this->db_connection)->select(
                     'SELECT '.implode(', ', $this->select_columns).
                     ', \'\' as sessionhash FROM '.
-                    $this->db_prefix.
+                    $this->db_prefix.   
                     'user WHERE userid = ?',
                     array($session[0]->userid)
                 );
@@ -151,7 +151,7 @@ class Vbauth
      * @return	integer	0 = false; X > 1 = Userid
      */
 
-    public function isValidCookieUser($userid, $password)
+    public function isValidCookieUser($userid, $password) 
     {
         $user = DB::connection($this->db_connection)->select(
             "SELECT username FROM ".$this->db_prefix.
@@ -269,7 +269,7 @@ class Vbauth
         if (is_array($userinfo)) {
             // we've got array
             $this->info = $userinfo;
-        } elseif (is_object($userinfo)) {
+        } else if (is_object($userinfo)) {
             // we've got object
             foreach ($this->select_columns as $column) {
                 if (isset($userinfo->{$column})) {
@@ -354,7 +354,7 @@ class Vbauth
                     break;
                 }
             }
-        } elseif (Request::server('HTTP_FROM') !== null ) {
+        } elseif (Request::server('HTTP_FROM') !== null) {
             $alt_ip = Request::server('HTTP_FROM');
         }
 
