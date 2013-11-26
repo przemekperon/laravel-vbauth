@@ -2,47 +2,47 @@
 
 use Illuminate\Support\ServiceProvider;
 
-class VbauthServiceProvider extends ServiceProvider {
+class Vbauth2ServiceProvider extends ServiceProvider
+{
+    /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
+    protected $defer = false;
 
-	/**
-	 * Indicates if loading of the provider is deferred.
-	 *
-	 * @var bool
-	 */
-	protected $defer = false;
-
-	/**
-	 * Bootstrap the application events.
-	 *
-	 * @return void
-	 */
-	public function boot()
-	{
-		$this->package('pperon/vbauth');
-	}
-
-	/**
-	 * Register the service provider.
-	 *
-	 * @return void
-	 */
-	public function register() {
-    $this->app['config']->package('pperon/vbauth', 'pperon/vbauth', 'pperon/vbauth');
-
-    $this->app['vbauth'] = $this->app->share(function($app)
+    /**
+     * Bootstrap the application events.
+     *
+     * @return void
+     */
+    public function boot()
     {
-        return new Vbauth;
-    });
-  }
+        $this->package('pperon/vbauth');
+    }
 
-	/**
-	 * Get the services provided by the provider.
-	 *
-	 * @return array
-	 */
-	public function provides()
-	{
-		return array('vbauth');
-	}
+    /**
+     * Register the service provider.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->app['config']->package('pperon/vbauth', __DIR__.'/../../config', 'pperon/vbauth');
+
+        $this->app['vbauth'] = $this->app->share(function ($app) {
+            return new Vbauth;
+        });
+    }
+
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return array('vbauth');
+    }
 
 }

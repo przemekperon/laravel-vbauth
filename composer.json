@@ -6,20 +6,20 @@
     "homepage": "https://github.com/przemyslawperon/laravel-vbauth",
     "authors": [
         {
-            "name": "Przemysław Peron",
+            "name": "Przemyslaw Peron",
             "email": "huan@huan.pl"
         }
     ],
     "require": {
         "php": ">=5.3.0",
-        "laravel/framework": ">=4.0"
+        "illuminate/support": "4.0.*"
     },
     "autoload": {
         "classmap": [
             "src/migrations"
         ],
         "psr-0": {
-            "Pperon\\Vbauth": "src/"
+            "Pperon\\Vbauth\\": "src/"
         }
     },
     "extra": {

@@ -18,9 +18,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
 
-
-class Vbauth {
-	
+class Vbauth
+{
     protected $db_prefix;
     protected $cookie_prefix;
     protected $cookie_timeout;
@@ -39,7 +38,7 @@ class Vbauth {
 
         /**
          *   Constructor;
-         *   Loads configuration options and 
+         *   Loads configuration options and
          *   then tries to authenticate current session against vB
          */
 
@@ -96,9 +95,11 @@ class Vbauth {
 
         // Logged in vB via session
         if (!empty($vb_sessionhash)) {
-            $session = DB::select('SELECT * FROM '.$this->db_prefix.'session WHERE '
-                .'sessionhash = ? AND idhash = ? AND lastactivity > ?',
-                array($vb_sessionhash, $this->fetchIdHash(), time() - $this->cookie_timeout));
+            $session = DB::select(
+                'SELECT * FROM '.$this->db_prefix.'session WHERE '.
+                'sessionhash = ? AND idhash = ? AND lastactivity > ?',
+                array($vb_sessionhash, $this->fetchIdHash(), time() - $this->cookie_timeout)
+            );
 
             if (empty($session)) {
                 return false;
@@ -106,9 +107,13 @@ class Vbauth {
 
             if (is_object($session[0]) and $session[0]->host == substr(Request::server('REMOTE_ADDR'), 0, 15)) {
                 // we have to add fake sessionhash field into the results
-                $userinfo = DB::select('SELECT '.implode(', ', $this->select_columns)
-                    .', \'\' as sessionhash FROM '
-                    .$this->db_prefix.'user WHERE userid = ?', array($session[0]->userid));
+                $userinfo = DB::select(
+                    'SELECT '.implode(', ', $this->select_columns).
+                    ', \'\' as sessionhash FROM '.
+                    $this->db_prefix.   
+                    'user WHERE userid = ?',
+                    array($session[0]->userid)
+                );
 
 
                 if (empty($userinfo)) {
@@ -123,9 +128,12 @@ class Vbauth {
 
                 // now let's inform vB what this user is just doing
 
-				DB::update('UPDATE '.$this->db_prefix.'session SET '
-                    .'lastactivity = ?, location = ? WHERE sessionhash = ?',
-                    array($session[0]->sessionhash, time(), Request::server('REQUEST_URI')));
+                DB::update(
+                    'UPDATE '.$this->db_prefix.
+                    'session SET '.
+                    'lastactivity = ?, location = ? WHERE sessionhash = ?',
+                    array($session[0]->sessionhash, time(), Request::server('REQUEST_URI'))
+                );
 
                 return true;
             }
@@ -142,11 +150,13 @@ class Vbauth {
      * @return	integer	0 = false; X > 1 = Userid
      */
 
-    public function isValidCookieUser($userid, $password)
+    public function isValidCookieUser($userid, $password) 
     {
-		$user = DB::select("SELECT username FROM ".$this->db_prefix
-            ."user WHERE userid=? AND md5(concat(password,?)) = ?",
-            array($userid, $this->cookie_salt, $password));
+        $user = DB::select(
+            "SELECT username FROM ".$this->db_prefix.
+            "user WHERE userid=? AND md5(concat(password,?)) = ?",
+            array($userid, $this->cookie_salt, $password)
+        );
         if (empty($user)) {
             return false;
         }
@@ -164,9 +174,11 @@ class Vbauth {
 
     public function isValidLogin($username, $password)
     {
-        $user = DB::select('SELECT userid FROM '.$this->db_prefix.'user WHERE '
-            .'username = ? AND password = md5(concat(md5(?), salt))',
-            array($username, $password));
+        $user = DB::select(
+            'SELECT userid FROM '.$this->db_prefix.'user WHERE '.
+            'username = ? AND password = md5(concat(md5(?), salt))',
+            array($username, $password)
+        );
 
         if (empty($user)) {
             return false;
@@ -186,15 +198,15 @@ class Vbauth {
 
     public function createCookieUser($userid, $password)
     {
-		setcookie($this->cookie_prefix.'userid', $userid, time() + 31536000, '/');
-		setcookie($this->cookie_prefix.'password', md5($password . $this->cookie_salt), time() + 31536000, '/');
+        setcookie($this->cookie_prefix.'userid', $userid, time() + 31536000, '/');
+        setcookie($this->cookie_prefix.'password', md5($password . $this->cookie_salt), time() + 31536000, '/');
     }
 
     /**
      * Creates a session for $userid (logs them into vBulletin) by creating
      * both a cookie and an entry in the session table.
      *
-     * @param   int     $userid         
+     * @param   int     $userid
      * @param	integer		Userid to log in
      */
 
@@ -218,8 +230,11 @@ class Vbauth {
           Request::server('HTTP_USER_AGENT'),
           1
         );
-        DB::insert('INSERT INTO '.$this->db_prefix.'session (userid,sessionhash,host,idhash,'
-            .'lastactivity,location,useragent,loggedin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', $session);
+        DB::insert(
+            'INSERT INTO '.$this->db_prefix.'session (userid, sessionhash, host, idhash, '.
+            'lastactivity, location, useragent, loggedin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            $session
+        );
         return $hash;
     }
 
@@ -229,13 +244,18 @@ class Vbauth {
      */
     public function deleteSession()
     {
-        setcookie($this->cookie_prefix.'sessionhash', '', time() - 3600,'/');
-        setcookie($this->cookie_prefix.'userid', '', time() - 3600,'/');
-        setcookie($this->cookie_prefix.'password', '', time() - 3600,'/');
-        setcookie($this->cookie_prefix.'imloggedin', '', time() - 3600,'/');
-        
-        DB::delete('DELETE FROM '.$this->db_prefix.'session WHERE '
-            .'sessionhash = ?', array($this->info['sessionhash']));
+        setcookie($this->cookie_prefix.'sessionhash', '', time() - 3600, '/');
+        setcookie($this->cookie_prefix.'userid', '', time() - 3600, '/');
+        setcookie($this->cookie_prefix.'password', '', time() - 3600, '/');
+        setcookie($this->cookie_prefix.'imloggedin', '', time() - 3600, '/');
+
+        DB::delete(
+            'DELETE FROM '.
+            $this->db_prefix.
+            'session WHERE '.
+            'sessionhash = ?',
+            array($this->info['sessionhash'])
+        );
     }
 
     /**
@@ -245,13 +265,13 @@ class Vbauth {
 
     public function setUserInfo($userinfo)
     {
-        if(is_array($userinfo)){
+        if (is_array($userinfo)) {
             // we've got array
             $this->info = $userinfo;
-        } else if(is_object($userinfo)) {
+        } else if (is_object($userinfo)) {
             // we've got object
-            foreach($this->select_columns as $column) {
-                if(isset($userinfo->{$column})) {
+            foreach ($this->select_columns as $column) {
+                if (isset($userinfo->{$column})) {
                     $this->info[$column] = $userinfo->{$column};
                 }
             }
@@ -305,7 +325,7 @@ class Vbauth {
 
     public function fetchSubstrIp($ip, $length = null)
     {
-        if ($length === null OR $length > 3) {
+        if ($length === null or $length > 3) {
             $length = 1;
         }
 
@@ -324,9 +344,10 @@ class Vbauth {
 
         if (Request::server('HTTP_CLIENT_IP') !== null) {
             $alt_ip = Request::server('HTTP_CLIENT_IP');
-        } elseif (Request::server('HTTP_X_FORWARDED_FOR') !== null AND preg_match_all('#\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}#s', Request::server('HTTP_X_FORWARDED_FOR'), $matches)) {
+        } elseif (Request::server('HTTP_X_FORWARDED_FOR') !== null
+            and preg_match_all('#\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}#s', Request::server('HTTP_X_FORWARDED_FOR'), $matches)) {
             // make sure we dont pick up an internal IP defined by RFC1918
-            foreach ($matches[0] AS $ip) {
+            foreach ($matches[0] as $ip) {
                 if (!preg_match("#^(10|172\.16|192\.168)\.#", $ip)) {
                     $alt_ip = $ip;
                     break;
@@ -347,7 +368,7 @@ class Vbauth {
 
     public function isLoggedIn()
     {
-        return (isset($this->info['userid'])  && !empty($this->info['userid']));
+        return (isset($this->info['userid'])  and !empty($this->info['userid']));
     }
 
     /**
@@ -358,7 +379,7 @@ class Vbauth {
 
     public function isAdmin()
     {
-        return (isset($this->info['userid'])  && !empty($this->info['userid']) && $this->is('admin'));
+        return (isset($this->info['userid'])  and !empty($this->info['userid']) and $this->is('admin'));
     }
 
     /**
@@ -396,12 +417,12 @@ class Vbauth {
      public function getUserInfo($user_id)
      {
         $userinfo = DB::table($this->db_prefix.'user')
-            ->where('userid','=',$user_id)
+            ->where('userid', '=', $user_id)
             ->select($this->select_columns)
             ->take(1)
             ->get();
         if(count($userinfo) == 1) {
-            foreach($this->select_columns as $column) {
+            foreach ($this->select_columns as $column) {
                 $user_data[$column] = $userinfo[0]->{$column};
             }
             return $user_data;
