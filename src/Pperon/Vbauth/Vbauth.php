@@ -3,7 +3,7 @@
 namespace Pperon\Vbauth;
 
 /**
- * VBAuth for Laravel 4
+ * VBAuth for Laravel 5
  *
  * Authentication library for vBulletin
  *
@@ -13,10 +13,10 @@ namespace Pperon\Vbauth;
  *
  */
 
-use Illuminate\Container\Container;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Request;
+use DB;
+use Config;
+use Request;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class Vbauth
 {
@@ -45,7 +45,7 @@ class Vbauth
 
     public function __construct()
     {
-        $this->db_connection  = Config::get('vbauth::db_connection', 'mysql');
+        $this->db_connection  = Config::get('vbauth::db_connection');
         $this->db_prefix      = Config::get('vbauth::db_prefix');
         $this->cookie_salt    = Config::get('vbauth::cookie_salt');
         $this->cookie_prefix  = Config::get('vbauth::cookie_prefix');  // TODO: get this from vB db
@@ -111,7 +111,7 @@ class Vbauth
                 $userinfo = DB::connection($this->db_connection)->select(
                     'SELECT '.implode(', ', $this->select_columns).
                     ', \'\' as sessionhash FROM '.
-                    $this->db_prefix.   
+                    $this->db_prefix.
                     'user WHERE userid = ?',
                     array($session[0]->userid)
                 );
@@ -151,7 +151,7 @@ class Vbauth
      * @return	integer	0 = false; X > 1 = Userid
      */
 
-    public function isValidCookieUser($userid, $password) 
+    public function isValidCookieUser($userid, $password)
     {
         $user = DB::connection($this->db_connection)->select(
             "SELECT username FROM ".$this->db_prefix.
