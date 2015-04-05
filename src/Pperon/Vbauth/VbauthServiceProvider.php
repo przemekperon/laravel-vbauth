@@ -21,11 +21,6 @@ class VbauthServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/path/to/config/vbauth.php' => config_path('vbauth.php'),
         ]);
-
-        $this->mergeConfigFrom(
-            __DIR__ . '/../config/vbauth.php',
-            'vbauth'
-        );
     }
 
     /**
