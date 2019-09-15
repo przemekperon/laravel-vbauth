@@ -9,7 +9,7 @@ class VbauthServiceProvider extends ServiceProvider
      *
      * @var bool
      */
-    protected $defer = false;
+    protected $defer = true;
 
     /**
      * Bootstrap the application events.
@@ -18,7 +18,9 @@ class VbauthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->package('pperon/vbauth');
+        $this->publishes([
+            __DIR__ . '/path/to/config/vbauth.php' => config_path('vbauth.php'),
+        ]);
     }
 
     /**
@@ -28,10 +30,8 @@ class VbauthServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app['config']->package('pperon/vbauth', __DIR__.'/../../config', 'pperon/vbauth');
-
         $this->app['vbauth'] = $this->app->share(function ($app) {
-            return new Vbauth;
+            return new Vbauth();
         });
     }
 
@@ -42,7 +42,7 @@ class VbauthServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return array('vbauth');
+        return ['vbauth'];
     }
 
 }
